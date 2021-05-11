@@ -1,3 +1,4 @@
+from sendMail import sendMail
 import requests
 
 headers = {"User-Agent":"Mozilla/5.0"}
@@ -13,10 +14,10 @@ def inStock(input):
 		secondIndex = source.index("</title>",firstIndex)
 		title = (source[firstIndex+8:secondIndex])
 		if(source.__contains__('class="btn btn-disabled btn-lg btn-block add-to-cart-button')):
-			print( "Not in Stock - "+title)
+			print("Not in Stock")
 			return "No"
 		elif (source.__contains__('class="btn btn-primary btn-lg btn-block btn-leading-ficon add-to-cart-button"')):
-			print( "In Stock - "+title)
+			print("In Stock - "+title)
 			return input
 		else:
 			return "No"
@@ -24,11 +25,16 @@ def inStock(input):
 		return "No"
 
 def buyURL(input):
-	return "https://api.bestbuy.com/click/~/"+input+"/cart/"
+	return "https://api.bestbuy.com/click/~/"+str(input)+"/cart/"
 
-for x in SKU_3060:
-	if(inStock(x)):
-		return buyURL
+while(True):
+	for x in SKU_3060:
+		temp = inStock(x)
+		if not(temp == "No"):
+			sendMail('IN STOCK ALERT',"This item is in stock\n"+buyURL(temp))
+			print("Mail Sent!")
+			
+
 
 
 
